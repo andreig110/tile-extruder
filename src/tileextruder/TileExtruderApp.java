@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Main {
+public class TileExtruderApp {
 
     private static final int TILE_SIZE = 32;
 
