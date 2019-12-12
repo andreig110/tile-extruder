@@ -75,7 +75,7 @@ public class MainController {
 
     @FXML
     void extrude(ActionEvent event) {
-        image = TileExtruder.extrudeTiles(image);
+        image = TileExtruder.extrudeTiles(image, 32, 32);
         updateImageView();
     }
 
