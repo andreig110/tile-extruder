@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -15,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.UnaryOperator;
 
 public class MainController {
 
@@ -29,6 +32,15 @@ public class MainController {
 
     @FXML // fx:id="imageView"
     private ImageView imageView;
+
+    @FXML // fx:id="rightPanel"
+    private VBox rightPanel;
+
+    @FXML // fx:id="tileWidth"
+    private TextField tileWidthText;
+
+    @FXML // fx:id="tileHeight"
+    private TextField tileHeightText;
 
     @FXML // fx:id="extrudeBtn"
     private Button extrudeBtn;
@@ -64,7 +76,7 @@ public class MainController {
         // Enable "extrude" & "save" controls
         saveMenuItem.setDisable(false);
         saveBtn.setDisable(false);
-        extrudeBtn.setDisable(false);
+        rightPanel.setDisable(false);
     }
 
     private void updateImageView() {
@@ -75,7 +87,7 @@ public class MainController {
 
     @FXML
     void extrude(ActionEvent event) {
-        image = TileExtruder.extrudeTiles(image, 32, 32);
+        image = TileExtruder.extrudeTiles(image, Integer.parseInt(tileWidthText.getText()), Integer.parseInt(tileHeightText.getText()));
         updateImageView();
     }
 
@@ -103,6 +115,19 @@ public class MainController {
     void initialize() {
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG Files", "*.png"));
+
+        UnaryOperator<TextFormatter.Change> tileSizeFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("([1-9][0-9]*)?")) {
+                if ((newText.length() < 4) || (Integer.parseInt(newText) <= 1024)) {
+                    return change;
+                }
+            }
+            return null;
+        };
+
+        tileWidthText.setTextFormatter(new TextFormatter<>(tileSizeFilter));
+        tileHeightText.setTextFormatter(new TextFormatter<>(tileSizeFilter));
     }
 
 }
