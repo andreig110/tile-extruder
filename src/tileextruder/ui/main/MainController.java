@@ -4,6 +4,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -11,6 +14,9 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tileextruder.model.TileExtruder;
 
 import javax.imageio.ImageIO;
@@ -49,7 +55,16 @@ public class MainController {
     private BufferedImage image;
 
     @FXML
-    void about(ActionEvent event) {
+    void about(ActionEvent event) throws IOException {
+        Stage aboutStage = new Stage();
+        aboutStage.initOwner(vbox.getScene().getWindow());
+        aboutStage.initModality(Modality.APPLICATION_MODAL);
+        aboutStage.initStyle(StageStyle.UTILITY);
+        aboutStage.setTitle("About Tile Extruder");
+        Parent root = FXMLLoader.load(getClass().getResource("../about/about.fxml"));
+        aboutStage.setScene(new Scene(root, 400, 180));
+        aboutStage.setResizable(false);
+        aboutStage.showAndWait();
     }
 
     @FXML
