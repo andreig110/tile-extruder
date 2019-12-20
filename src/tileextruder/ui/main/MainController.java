@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -18,6 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tileextruder.model.TileExtruder;
+import tileextruder.util.FXImageUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -52,7 +54,7 @@ public class MainController {
     private Button extrudeBtn;
 
     private FileChooser fileChooser;
-    private BufferedImage image;
+    private BufferedImage bufferedImage;
 
     @FXML
     void about(ActionEvent event) throws IOException {
@@ -81,7 +83,7 @@ public class MainController {
             return;
 
         try {
-            image = ImageIO.read(selectedFile);
+            bufferedImage = ImageIO.read(selectedFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,14 +97,16 @@ public class MainController {
     }
 
     private void updateImageView() {
-        imageView.setImage(SwingFXUtils.toFXImage(image, null));
-        imageView.setFitWidth(2 * image.getWidth());
-        imageView.setFitHeight(2 * image.getHeight());
+        Image fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
+        imageView.setImage(FXImageUtil.scaleImage(fxImage, 4));
+        imageView.setFitWidth(4 * bufferedImage.getWidth());
+        imageView.setFitHeight(4 * bufferedImage.getHeight());
     }
 
     @FXML
     void extrude(ActionEvent event) {
-        image = TileExtruder.extrudeTiles(image, Integer.parseInt(tileWidthText.getText()), Integer.parseInt(tileHeightText.getText()));
+        bufferedImage = TileExtruder.extrudeTiles(bufferedImage, Integer.parseInt(tileWidthText.getText()),
+                Integer.parseInt(tileHeightText.getText()));
         updateImageView();
     }
 
@@ -120,7 +124,7 @@ public class MainController {
             selectedFile = new File(selectedFile.getParentFile(), selectedFile.getName() + ".png");
 
         try {
-            ImageIO.write(image, "png", selectedFile);
+            ImageIO.write(bufferedImage, "png", selectedFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
