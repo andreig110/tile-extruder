@@ -148,9 +148,12 @@ public class MainController {
 
     @FXML
     void extrude(ActionEvent event) {
-        bufferedImage = TileExtruder.extrudeTiles(bufferedImage, Integer.parseInt(tileWidthText.getText()),
-                Integer.parseInt(tileHeightText.getText()));
+        final int tileWidth = Integer.parseInt(tileWidthText.getText());
+        final int tileHeight = Integer.parseInt(tileHeightText.getText());
+        bufferedImage = TileExtruder.extrudeTiles(bufferedImage, tileWidth, tileHeight);
         updateImageView();
+        tileWidthText.setText(String.valueOf(tileWidth + 2));
+        tileHeightText.setText(String.valueOf(tileHeight + 2));
     }
 
     @FXML
