@@ -2,6 +2,7 @@ package tileextruder.model;
 
 import tileextruder.util.ImageUtil;
 
+import javax.imageio.ImageTypeSpecifier;
 import java.awt.image.BufferedImage;
 
 public class TileExtruder {
@@ -12,7 +13,8 @@ public class TileExtruder {
 
         final int extrudedTileWidth = tileWidth + 2;
         final int extrudedTileHeight = tileHeight + 2;
-        BufferedImage extrudedImage = new BufferedImage(columns * extrudedTileWidth, rows * extrudedTileHeight, image.getType());
+        final ImageTypeSpecifier its = ImageTypeSpecifier.createFromRenderedImage(image);
+        BufferedImage extrudedImage = its.createBufferedImage(columns * extrudedTileWidth, rows * extrudedTileHeight);
 
         for (int tx = 0; tx < columns; tx++)
             for (int ty = 0; ty < rows; ty++) {
