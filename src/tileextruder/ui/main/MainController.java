@@ -115,6 +115,7 @@ public class MainController {
             e.printStackTrace();
         }
 
+        ((Stage) vbox.getScene().getWindow()).setTitle(selectedFile.getName() + " - Tile Extruder");
         updateImageView();
 
         // Enable controls if disabled
