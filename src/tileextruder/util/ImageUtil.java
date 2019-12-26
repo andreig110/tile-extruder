@@ -9,11 +9,11 @@ public class ImageUtil {
                                 final BufferedImage dest, final int destPosX, final int destPosY) {
         switch (src.getRaster().getDataBuffer().getDataType()) {
             case DataBuffer.TYPE_BYTE:
-                if (src.getType() == BufferedImage.TYPE_BYTE_BINARY) {  // byte-packed 1, 2, or 4 bit image
-                    // TODO
+                if (    src.getType() == BufferedImage.TYPE_BYTE_BINARY ||   // byte-packed 1, 2, or 4 bit image
+                        src.getType() == BufferedImage.TYPE_BYTE_INDEXED) {  // indexed byte image (8 bit)
+                    copyRectRGB(src, srcRectX, srcRectY, srcRectWidth, srcRectHeight, dest, destPosX, destPosY);
                 } else {
                     /* else if src.getType() is one of the following image type:
-                       TYPE_BYTE_INDEXED - indexed byte image (8 bit)
                        TYPE_3BYTE_BGR    - 8 bpc RGB
                        TYPE_4BYTE_ABGR   - 8 bpc RGBA
                        TYPE_BYTE_GRAY    - 8 bpc GRAY
@@ -74,10 +74,20 @@ public class ImageUtil {
         int destOffset = n * (destPosY * dest.getWidth() + destPosX);
 
         for (int y = srcRectY;
-             y < srcRectY + srcRectHeight;
-             y++, srcOffset += n * src.getWidth(), destOffset += n * dest.getWidth()) {
+                 y < srcRectY + srcRectHeight;
+                 y++, srcOffset += n * src.getWidth(), destOffset += n * dest.getWidth()) {
             System.arraycopy(srcBuf, srcOffset, destBuf, destOffset, n * srcRectWidth);
         }
+    }
+
+    private static void copyRectRGB(final BufferedImage src, final int srcRectX, final int srcRectY,
+                                    final int srcRectWidth, final int srcRectHeight,
+                                    final BufferedImage dest, final int destPosX, final int destPosY) {
+        for (int y = srcRectY; y < srcRectY + srcRectHeight; y++)
+            for (int x = srcRectX; x < srcRectX + srcRectWidth; x++) {
+                final int argb = src.getRGB(x, y);
+                dest.setRGB(destPosX + (x - srcRectX), destPosY + (y - srcRectY), argb);
+            }
     }
 
 }
